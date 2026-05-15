@@ -19,17 +19,17 @@ sans aucun composant externe — uniquement la carte et le câble USB.
 
 ### 1. blink
 Premier programme uploadé sur l'ESP32.
-La LED clignote 3 fois rapidement puis fait une longue pause. /n
+La LED clignote 3 fois rapidement puis fait une longue pause.  
 Compétences : setup(), loop(), digitalWrite(), delay(), boucle for, logique de timing
 
 ### 2. Serial Monitor
-Affiche un compteur qui s'incrémente chaque seconde. /n
+Affiche un compteur qui s'incrémente chaque seconde.  
 Compétences : Serial.begin(), Serial.print(), Serial.println(),
 variables globales, concaténation en C++
 
 ### 3. LED Control
 Contrôle de la LED via commandes texte (ON/OFF) depuis
-le Serial Monitor. /n
+le Serial Monitor.  
 Compétences : Serial.available(), Serial.readStringUntil(),
 String.trim(), conditions if/else
 
