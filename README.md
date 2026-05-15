@@ -16,18 +16,37 @@ visualisation sur dashboard cloud (Grafana/InfluxDB).
 
 * ESP32 DOIT DevKit V1
 * Capteur BME280 (température, humidité, pression)
-* Capteur CCS811 (CO2, qualité d'air)
-* Écran OLED 0.96"
+* Capteur ENS160 (CO2 équivalent, TVOC, AQI)
+* Capteur AHT21 (température, humidité — redondance)
+* Écran OLED 0.96" SSD1306
 
 ## Progression
 
-### Phase 1 — Prise en main (En cours)
+* Phase 1 — Prise en main (En cours)
+* Phase 2 — Intégration capteurs + OLED
+* Phase 3 — WiFi + InfluxDB + Grafana Cloud
+* Phase 4 — Batterie + Deep Sleep + Alertes + Boîtier
 
-### Phase 2 — Intégration
+## Environnement de développement
 
-### Phase 3 — Connectivité
+### Logiciels installés
 
-### Phase 4 — Finalisation
+* Arduino IDE 2.x
+* Git 2.47
+* Pilote CP2102
+
+### Bibliothèques Arduino
+
+* Adafruit BME280 Library
+* Adafruit SSD1306
+* Adafruit GFX Library
+* DFRobot ENS160
+* Adafruit AHTX0
+
+### Services Cloud
+
+* InfluxDB Cloud (base de données time-series)
+* Grafana Cloud (dashboard de visualisation)
 
 ## Compétences développées
 
@@ -35,22 +54,5 @@ visualisation sur dashboard cloud (Grafana/InfluxDB).
 * Protocole I2C
 * IoT et communication WiFi
 * Visualisation de données
-
-## Environnement de développement
-
-### Logiciels installés
-
-- Arduino IDE 2.x
-- Git 2.47
-- Pilote CP2102
-
-### Bibliothèques Arduino
-- Adafruit BME280 Library
-- Adafruit SSD1306
-- Adafruit GFX Library
-- CCS811 by Maarten Pennings
-
-### Services Cloud
-- InfluxDB Cloud (base de données time-series)
-- Grafana Cloud (dashboard de visualisation)
+* Fusion et redondance de capteurs
 
