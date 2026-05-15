@@ -22,8 +22,8 @@ visualisation sur dashboard cloud (Grafana/InfluxDB).
 
 ## Progression
 
-* Phase 1 — Prise en main (En cours)
-* Phase 2 — Intégration capteurs + OLED
+* Phase 1 — Prise en main (Terminé)
+* Phase 2 — Intégration capteurs + OLED (En cours)
 * Phase 3 — WiFi + InfluxDB + Grafana Cloud
 * Phase 4 — Batterie + Deep Sleep + Alertes + Boîtier
 
