@@ -36,37 +36,21 @@ visualisation sur dashboard cloud (Grafana/InfluxDB).
 * IoT et communication WiFi
 * Visualisation de données
 
+## Environnement de développement
 
+### Logiciels installés
 
-\## Environnement de développement
+- Arduino IDE 2.x
+- Git 2.47
+- Pilote CP2102
 
+### Bibliothèques Arduino
+- Adafruit BME280 Library
+- Adafruit SSD1306
+- Adafruit GFX Library
+- CCS811 by Maarten Pennings
 
-
-\### Logiciels installés
-
-\- Arduino IDE 2.x
-
-\- Git 2.47
-
-\- Pilote CP2102
-
-
-
-\### Bibliothèques Arduino
-
-\- Adafruit BME280 Library
-
-\- Adafruit SSD1306
-
-\- Adafruit GFX Library
-
-\- CCS811 by Maarten Pennings
-
-
-
-\### Services Cloud
-
-\- InfluxDB Cloud (base de données time-series)
-
-\- Grafana Cloud (dashboard de visualisation)
+### Services Cloud
+- InfluxDB Cloud (base de données time-series)
+- Grafana Cloud (dashboard de visualisation)
 
