@@ -11,8 +11,8 @@ prises pour le choix des capteurs du projet.
 
 | Capteur | Mesures | Statut | Prix | Décision |
 |---------|---------|--------|------|---------|
-| CCS811 | eCO2, TVOC | Discontinué | ~33$ | ❌ Abandonné |
-| ENS160 | eCO2, TVOC, AQI | Actif | Abordable | ✅ Choisi |
+| CCS811 | eCO2, TVOC | Discontinué | ~33$ | Abandonné |
+| ENS160 | eCO2, TVOC, AQI | Actif | Abordable | Choisi |
 
 ### Justification
 
@@ -34,10 +34,10 @@ ozone — technique impossible avec le CCS811.
 
 | Capteur | Précision Temp | Précision Humidité | Interface | Disponibilité | Décision |
 |---------|---------------|-------------------|-----------|---------------|---------|
-| ENS211 | ±0.15°C | ±2% RH | I2C | ❌ Introuvable en module | ❌ Abandonné |
-| DHT22 | ±0.5°C | ±2% RH | Single-wire | ✅ Facile | ❌ Écarté |
-| AHT21 | ±0.3°C | ±2% RH | I2C | ✅ Inclus avec ENS160 | ✅ Bonus |
-| BME280 | ±1°C | ±3% RH | I2C | ✅ Facile | ✅ Choisi |
+| ENS211 | ±0.15°C | ±2% RH | I2C | Introuvable en module | Abandonné |
+| DHT22 | ±0.5°C | ±2% RH | Single-wire | Facile | Écarté |
+| AHT21 | ±0.3°C | ±2% RH | I2C | Inclus avec ENS160 | Bonus |
+| BME280 | ±1°C | ±3% RH | I2C | Facile | Choisi |
 
 ### Justification
 
@@ -76,9 +76,9 @@ instrumentation professionnelle.
 
 | Capteur | Précision absolue | Précision relative | Disponibilité | Décision |
 |---------|------------------|--------------------|---------------|---------|
-| BMP390 | ±0.50 hPa | ±0.03 hPa | ✅ Disponible | ❌ Remplacé |
-| BMP388 | ±0.50 hPa | ±0.03 hPa | ✅ Disponible | ❌ Remplacé |
-| BME280 | ±1 hPa | — | ✅ Facile | ✅ Inclus |
+| BMP390 | ±0.50 hPa | ±0.03 hPa | Disponible | Remplacé |
+| BMP388 | ±0.50 hPa | ±0.03 hPa | Disponible | Remplacé |
+| BME280 | ±1 hPa | — | Facile | Inclus |
 
 ### Justification
 
@@ -94,7 +94,7 @@ restant suffisamment précis pour une station météo intérieure.
 
 | Capteur | Mesures | Problème | Décision |
 |---------|---------|---------|---------|
-| BME680 | Temp, humidité, pression, VOC | Ne mesure pas le CO2 directement. Consommation élevée du capteur gaz (9-12mA) incompatible avec objectif d'autonomie batterie | ❌ Abandonné |
+| BME680 | Temp, humidité, pression, VOC | Ne mesure pas le CO2 directement. Consommation élevée du capteur gaz (9-12mA) incompatible avec objectif d'autonomie batterie | Abandonné |
 
 ---
 
