@@ -137,9 +137,9 @@ Wire.begin();
 
 ## Baud Rate
 
-Le baud rate est la vitesse de communication en bits par seconde.
+Le baud rate est la vitesse de communication en bits par seconde.  
 Serial.begin() et le Serial Monitor doivent avoir
-la même vitesse sinon les données sont illisibles.
+la même vitesse sinon les données sont illisibles.  
 Valeur standard pour ESP32 : 115200
 
 ## Concepts importants
@@ -157,7 +157,7 @@ Indique qu'une fonction ne retourne aucune valeur.
 Exemple : void setup(), void loop()
 
 ### ++ et --
-compteur++  → Incrémente de 1 (compteur = compteur + 1)
+compteur++  → Incrémente de 1 (compteur = compteur + 1)  
 compteur--  → Décrémente de 1 (compteur = compteur - 1)
 
 ## Bonnes pratiques
