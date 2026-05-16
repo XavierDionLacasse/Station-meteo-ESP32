@@ -13,12 +13,13 @@ visualisation sur dashboard cloud (Grafana/InfluxDB).
 * Visualiser les données sur un dashboard connecté
 
 ## Matériel utilisé
-
-* ESP32 DOIT DevKit V1
-* Capteur BME280 (température, humidité, pression)
-* Capteur ENS160 (CO2 équivalent, TVOC, AQI)
-* Capteur AHT21 (température, humidité — redondance)
-* Écran OLED 0.96" SSD1306
+| Matériel | Description | Prix lors de l'achat |
+|----------|-------------|----------------------|
+| Système sur puce | ESP32 DOIT DevKit V1 | 24$ |
+| Capteur de temperature, humidité et de pression | Capteur BME280 | 13$ |
+| Capteur CO2, TVOC et AQI | ENS160 | 8$ |
+| Capteur température et humidité | AHT21 | 8$ |
+| Écran | Écran OLED 0.96" SSD1306 | 10$ |
 
 ## Progression
 
