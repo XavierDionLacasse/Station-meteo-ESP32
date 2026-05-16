@@ -2,9 +2,10 @@
 
 ## Description
 
-Système d'instrumentation multi-capteurs embarqué sur ESP32 avec
-acquisition de données en temps réel, transmission WiFi et
-visualisation sur dashboard cloud (Grafana/InfluxDB).
+Station météo intérieure connectée basée sur ESP32 — acquisition 
+multi-capteurs (température, humidité, pression, CO2, qualité d'air) 
+avec affichage OLED local, transmission WiFi et dashboard cloud 
+en temps réel via InfluxDB et Grafana.
 
 ## Objectifs
 
