@@ -8,10 +8,9 @@ avec affichage OLED local, transmission WiFi et dashboard cloud
 en temps réel via InfluxDB et Grafana.
 
 ## Objectifs
-
-* Apprendre l'électronique embarquée et le protocole I2C
-* Acquérir des données environnementales en temps réel
-* Visualiser les données sur un dashboard connecté
+* Concevoir un système embarqué de monitoring environnemental
+* Implémenter une architecture IoT complète de bout en bout
+* Appliquer des techniques de fusion et redondance de capteurs
 
 ## Matériel utilisé
 | Matériel | Description | Prix lors de l'achat |
