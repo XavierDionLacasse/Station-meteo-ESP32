@@ -22,10 +22,10 @@ en temps réel via InfluxDB et Grafana.
 | Capteur température et humidité | AHT21 | 8$ |
 | Écran | Écran OLED 0.96" SSD1306 | 10$ |
 
-## Progression
+## Phase de conception
 
-* Phase 1 — Prise en main (Terminé)
-* Phase 2 — Intégration capteurs + OLED (En cours)
+* Phase 1 — Prise en main
+* Phase 2 — Intégration capteurs + OLED
 * Phase 3 — WiFi + InfluxDB + Grafana Cloud
 * Phase 4 — Batterie + Deep Sleep + Alertes + Boîtier
 
