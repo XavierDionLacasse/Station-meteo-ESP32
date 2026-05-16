@@ -15,8 +15,8 @@ en temps réel via InfluxDB et Grafana.
 | Composant | Rôle | Statut |
 |-----------|------|--------|
 | ESP32 DOIT DevKit V1 | Microcontrôleur principal | ✅ Reçu |
-| BME280 | Température, humidité, pression | 🚚 En transit |
-| ENS160 + AHT21 (DKARDU) | CO2, TVOC, AQI + redondance | 🚚 En transit |
+| BME280 | Température, humidité, pression | ✅ Reçu |
+| ENS160 + AHT21 (DKARDU) | CO2, TVOC, AQI + redondance | ✅ Reçu |
 | OLED 0.96" SSD1306 | Affichage local | 🚚 En transit |
 
 ## Phases du projet
@@ -37,17 +37,22 @@ en temps réel via InfluxDB et Grafana.
 
 ### 🔄 Phase 2 — Intégration capteurs + OLED
 - Schéma de câblage réalisé dans Cirkit Designer
-- Code BME280 + OLED SSD1306 écrit et pushé (`station_meteo.ino`)
-- Lecture température, humidité, pression sur Serial Monitor et OLED
-- ENS160 + AHT21 : en attente de réception du matériel
+- Code complet écrit et pushé (`station_meteo.ino`)
+  - BME280 : température, humidité, pression
+  - AHT21 : température, humidité (redondance)
+  - ENS160 : eCO2, TVOC, AQI avec compensation BME280
+  - OLED : 3 pages défilantes + barre de warm-up
+- BME280 et ENS160+AHT21 reçus — câblage et tests à venir
+- OLED en transit
 
 ### 🔒 Phase 3 — WiFi + InfluxDB + Grafana Cloud
 - Services cloud configurés (InfluxDB Cloud + Grafana Cloud)
 - Développement à venir
 
 ### 🔒 Phase 4 — Batterie + Deep Sleep + Alertes + Boîtier
-- Deep Sleep toutes les 5 minutes (~25 jours d'autonomie estimée)
+- Deep Sleep 15-20 minutes (autonomie ~2 jours théoriques)
 - LED RGB + Buzzer + Alertes email
+- Boîtier 3D + PCB personnalisé
 
 ## Structure du dépôt
 
