@@ -1,42 +1,25 @@
 # Phase 1 — Prise en main ESP32
 
+> Statut : ✅ Complétée | Version 1.0
+
 ## Objectif
 Apprendre les bases de la programmation embarquée avec l'ESP32
 sans aucun composant externe — uniquement la carte et le câble USB.
 
-## Matériel utilisé
+## Matériel
 - ESP32 DOIT DevKit V1
 - Câble USB micro-B
-- Ordinateur Windows 11
 
-## Observations importantes
+## Notes importantes
 - Le bouton BOOT doit être maintenu lors de l'upload sur certaines
   cartes DOIT DevKit V1 — relâcher quand "Connecting..." apparaît
-- Vitesse Serial Monitor : 115200 baud obligatoire
-- LED intégrée : GPIO2 (LED_BUILTIN fonctionne directement)
+- Vitesse Serial Monitor : 115200 baud
+- LED intégrée : GPIO2 (`LED_BUILTIN` fonctionne directement)
 
 ## Programmes
 
-### 1. blink
-Premier programme uploadé sur l'ESP32.
-La LED clignote 3 fois rapidement puis fait une longue pause.  
-Compétences : setup(), loop(), digitalWrite(), delay(), boucle for, logique de timing
-
-### 2. Serial Monitor
-Affiche un compteur qui s'incrémente chaque seconde.  
-Compétences : Serial.begin(), Serial.print(), Serial.println(),
-variables globales, concaténation en C++
-
-### 3. LED Control
-Contrôle de la LED via commandes texte (ON/OFF) depuis
-le Serial Monitor.  
-Compétences : Serial.available(), Serial.readStringUntil(),
-String.trim(), conditions if/else
-
-## Compétences acquises
-- Structure de base Arduino (setup/loop)
-- Contrôle des GPIO en sortie
-- Communication série bidirectionnelle
-- Lecture et traitement de commandes texte
-- Débogage via Serial Monitor
-- Versioning avec Git et GitHub
+| Programme | Description | Concepts clés |
+|-----------|-------------|---------------|
+| blink | LED clignote 3x rapidement puis longue pause | `setup()`, `loop()`, `digitalWrite()`, `delay()`, boucle `for` |
+| Serial_Monitor | Compteur qui s'incrémente chaque seconde | `Serial.begin()`, `Serial.print()`, variables globales |
+| led_control | Contrôle ON/OFF de la LED via Serial Monitor | `Serial.available()`, `Serial.readStringUntil()`, `if/else` |
