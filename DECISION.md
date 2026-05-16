@@ -1,6 +1,6 @@
 # Décisions techniques — Station Météo ESP32
 
-> Version 1.1 — Phase 2
+> Version 1.2 — Phase 2
 
 Ce document retrace toutes les options évaluées et les décisions
 prises pour le choix des capteurs du projet.
@@ -161,7 +161,65 @@ Phase 4 après mesure de la consommation réelle :
 
 - Augmenter l'intervalle Deep Sleep (60 min+)
 - Plusieurs batteries 18650 en parallèle
-- Panneau solaire (si near fenêtre)
+- Panneau solaire (si près d'une fenêtre)
 - Sacrifier la précision ENS160 (pas de warm-up → ~23 jours)
 
 **Décision reportée à la Phase 4.**
+
+---
+
+## 8. Affichage OLED — Stratégie par phase
+
+### Décision
+
+| Phase | Stratégie | Justification |
+|-------|-----------|---------------|
+| Phase 2-3 | 3 pages défilantes (4s chacune) | Validation de tous les capteurs |
+| Phase finale | Page unique condensée | Expérience utilisateur épurée |
+
+### Pages Phase 2-3
+
+- **Page 1 — BME280 :** Température, humidité, pression
+- **Page 2 — AHT21 :** Température, humidité + écart vs BME280 (dT, dH)
+- **Page 3 — ENS160 :** eCO2, TVOC, AQI avec libellé textuel
+
+### Page finale (Phase 4+)
+
+Affichage condensé des données essentielles uniquement — température,
+humidité, AQI. Les données détaillées restent accessibles via Grafana.
+
+### Warm-up ENS160
+
+Barre de progression affichée au démarrage pendant 3 minutes.
+Aucun message technique — l'utilisateur voit simplement l'appareil
+s'initialiser. Les données BME280/AHT21 sont disponibles
+immédiatement après le warm-up.
+
+---
+
+## 9. Fusion de données — BME280 et AHT21
+
+### Décision
+
+Méthode retenue : **Filtre de Kalman simplifié** avec détection d'anomalie
+
+### Justification
+
+| Méthode | Complexité | Précision | Décision |
+|---------|------------|-----------|----------|
+| Moyenne simple | Faible | Moyenne | ❌ Écarté |
+| Moyenne pondérée | Faible | Bonne | ❌ Écarté |
+| Filtre de Kalman | Moyenne | Optimale | ✅ Choisi |
+| Détection anomalie seule | Faible | — | ❌ Écarté |
+
+Le filtre de Kalman est la méthode standard en instrumentation
+professionnelle et systèmes embarqués. Il combine les mesures en
+tenant compte de l'incertitude de chaque capteur mathématiquement,
+produisant une estimation optimale de la valeur réelle.
+
+Une détection d'anomalie sera combinée au filtre : si les deux
+capteurs divergent au-delà d'un seuil défini (ex: >1°C), une
+alerte sera signalée plutôt que de fusionner des données
+potentiellement erronées.
+
+**Implémentation prévue en Phase 3.**
