@@ -27,7 +27,7 @@ en temps réel via InfluxDB et Grafana.
 Les décisions techniques concernant le choix des capteurs sont 
 documentées en détail, incluant toutes les options évaluées et 
 les justifications des choix retenus.  
-[Voir les décisions techniques ](DECISIONS.md)
+[Voir les décisions techniques](DECISIONS.md)
 
 ## Phase de conception
 
