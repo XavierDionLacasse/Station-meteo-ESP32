@@ -1,6 +1,6 @@
 # Décisions techniques — Station Météo ESP32
 
-> Version 1.0 — Phase 1
+> Version 1.1 — Phase 2
 
 Ce document retrace toutes les options évaluées et les décisions
 prises pour le choix des capteurs du projet.
@@ -113,3 +113,55 @@ gaz (9-12mA) est incompatible avec l'objectif d'autonomie sur batterie.
 - Tous les capteurs sur le même bus I2C (GPIO21/GPIO22)
 - Aucun conflit d'adresse I2C
 - Bibliothèques bien maintenues pour tous les capteurs
+
+---
+
+## 6. Intervalle Deep Sleep et autonomie
+
+### Décision
+
+Intervalle Deep Sleep retenu : **15-20 minutes**
+
+### Justification
+
+L'ENS160 requiert un warm-up de 3 minutes après chaque réveil avant
+de produire des mesures fiables. Avec un intervalle de 5 minutes,
+60% du temps actif serait consacré au warm-up, ce qui est inefficace
+et détruit l'autonomie batterie.
+
+La qualité de l'air intérieure varie lentement — une mesure toutes
+les 15-20 minutes capture bien les tendances sans perte d'information
+significative.
+
+### Consommation théorique par cycle (15 minutes, batterie 18650 2500mAh)
+
+| Phase | Durée | Courant | Consommation |
+|-------|-------|---------|-------------|
+| Démarrage + BME280 + AHT21 + OLED | 5s | ~181 mA | 0.251 mAh |
+| Warm-up ENS160 + OLED | 180s | ~209 mA | 10.45 mAh |
+| Lecture ENS160 + WiFi + OLED | 10s | ~290 mA | 0.806 mAh |
+| Deep Sleep | 705s | ~0.02 mA | 0.004 mAh |
+| **Total par cycle** | | | **~11.5 mAh** |
+
+Autonomie théorique : **~2.25 jours** (~1.5-2 jours en conditions réelles)
+
+### Note importante
+
+Ces chiffres sont théoriques. La consommation réelle sera mesurée
+avec le multimètre KAIWEETS HT118A en Phase 4 avant de prendre
+les décisions finales sur la batterie et l'alimentation.
+
+---
+
+## 7. Alimentation Phase 4 — Décision en attente
+
+La faible autonomie théorique (~2 jours) nécessite une réflexion
+approfondie sur la solution d'alimentation. Options à évaluer en
+Phase 4 après mesure de la consommation réelle :
+
+- Augmenter l'intervalle Deep Sleep (60 min+)
+- Plusieurs batteries 18650 en parallèle
+- Panneau solaire (si near fenêtre)
+- Sacrifier la précision ENS160 (pas de warm-up → ~23 jours)
+
+**Décision reportée à la Phase 4.**
