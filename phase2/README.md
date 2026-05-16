@@ -35,5 +35,3 @@ Schéma réalisé dans Cirkit Designer.
 - DFRobot ENS160
 - Adafruit AHTX0
 
-## Statut
-🔒 En préparation — matériel en transit
