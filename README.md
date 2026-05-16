@@ -71,6 +71,3 @@ en temps réel via InfluxDB et Grafana.
 
 ## Documentation
 - [Décisions techniques](DECISION.md) — choix des capteurs et justifications
-- Boîtier 3D + PCB personnalisé
-
-## Structure du dépôt
