@@ -22,6 +22,14 @@ en temps réel via InfluxDB et Grafana.
 | Capteur température et humidité | AHT21 | 8$ |
 | Écran | Écran OLED 0.96" SSD1306 | 10$ |
 
+## Documentation technique
+
+Les décisions techniques concernant le choix des capteurs sont 
+documentées en détail, incluant toutes les options évaluées et 
+les justifications des choix retenus.
+
+[Voir les décisions techniques →](DECISIONS.md)
+
 ## Phase de conception
 
 * Phase 1 — Prise en main
