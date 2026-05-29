@@ -27,6 +27,17 @@ unsigned long lastWifiRetry = 0;
 #define LECTURE_INTERVALLE  2000     // 2 secondes entre lectures
 #define PAGE_INTERVALLE     4000     // 4 secondes entre pages OLED
 
+// Correction de biais AHT21
+#define AHT21_TEMP_OFFSET 2.0f  // °C — biais empirique mesuré
+
+// Filtre de Kalman
+struct KalmanFilter {
+  float x;  // estimation courante
+  float P;  // incertitude courante
+  float Q;  // bruit du processus
+  float R;  // bruit de mesure
+};
+
 // ─── Objets capteurs ──────────────────────────────────────────────
 Adafruit_BME280   bme;
 Adafruit_AHTX0    aht;
@@ -40,9 +51,17 @@ uint16_t ens_eco2, ens_tvoc;
 uint8_t  ens_aqi;
 bool     ens_pret = false;
 
+float fusionTemp = 0.0f;
+float fusionHumi = 0.0f;
+
 unsigned long derniere_lecture = 0;
 unsigned long derniere_page    = 0;
 uint8_t page_actuelle          = 0;
+
+// Q faible = on fait confiance à la continuité
+// R_bme280 < R_aht21 = BME280 plus fiable que AHT21
+KalmanFilter kTemp = {0.0f, 1.0f, 0.01f, 0.5f};
+KalmanFilter kHumi = {0.0f, 1.0f, 0.01f, 0.5f};
 
 // ═════════════════════════════════════════════════════════════════
 // FONCTIONS UTILITAIRES
@@ -164,6 +183,8 @@ void afficher_serie() {
   } else {
     Serial.println("  En calibration...");
   }
+  Serial.print("Fusion Temp: "); Serial.print(fusionTemp, 1); Serial.println(" °C");
+  Serial.print("Fusion Humi: "); Serial.print(fusionHumi, 1); Serial.println(" %");
 }
 
 // ═════════════════════════════════════════════════════════════════
@@ -314,6 +335,47 @@ void checkWiFi() {
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 }
 
+float kalmanUpdate(KalmanFilter &kf, float measurement) {
+  // Prédiction
+  kf.P = kf.P + kf.Q;
+
+  // Gain de Kalman
+  float K = kf.P / (kf.P + kf.R);
+
+  // Correction
+  kf.x = kf.x + K * (measurement - kf.x);
+  kf.P = (1.0f - K) * kf.P;
+
+  return kf.x;
+}
+
+void fusionCapteurs(float tempBME, float humisBME, float tempAHT, float humiAHT) {
+  // Correction de biais AHT21
+  float tempAHTCorr = tempAHT - AHT21_TEMP_OFFSET;
+
+  // Détection d'anomalie
+  float ecartTemp = abs(tempBME - tempAHTCorr);
+  float ecartHumi = abs(humisBME - humiAHT);
+
+  if (ecartTemp > 1.0f) {
+    Serial.print("⚠ ANOMALIE TEMP: ecart = ");
+    Serial.print(ecartTemp, 1);
+    Serial.println(" °C");
+  }
+  if (ecartHumi > 5.0f) {
+    Serial.print("⚠ ANOMALIE HUMI: ecart = ");
+    Serial.print(ecartHumi, 1);
+    Serial.println(" %");
+  }
+
+  // Filtre de Kalman — moyenne pondérée BME280 + AHT21 corrigé
+  float tempMoyenne = (tempBME + tempAHTCorr) / 2.0f;
+  float humiMoyenne = (humisBME + humiAHT) / 2.0f;
+
+  fusionTemp = kalmanUpdate(kTemp, tempMoyenne);
+  fusionHumi = kalmanUpdate(kHumi, humiMoyenne);
+}
+
 // ═════════════════════════════════════════════════════════════════
 // SETUP
 // ═════════════════════════════════════════════════════════════════
@@ -374,6 +436,7 @@ void loop() {
     lire_bme280();
     lire_aht21();
     lire_ens160();   // Utilise bme_temp et bme_hum pour compensation
+    fusionCapteurs(bme_temp, bme_hum, aht_temp, aht_hum);
     afficher_serie();
   }
 
