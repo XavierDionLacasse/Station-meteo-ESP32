@@ -17,14 +17,14 @@ en temps réel via InfluxDB et Grafana.
 | ESP32 DOIT DevKit V1 | Microcontrôleur principal | ✅ Reçu |
 | BME280 | Température, humidité, pression | ✅ Reçu |
 | ENS160 + AHT21 (DKARDU) | CO2, TVOC, AQI + redondance | ✅ Reçu |
-| OLED 0.96" SSD1306 | Affichage local | 🚚 En transit |
+| OLED 0.96" SSD1306 | Affichage local | ✅ Reçu |
 
 ## Phases du projet
 | Phase | Description | Statut |
 |-------|-------------|--------|
 | Phase 1 | Prise en main ESP32 | ✅ Complétée |
-| Phase 2 | Intégration capteurs + OLED | 🔄 En cours |
-| Phase 3 | WiFi + InfluxDB + Grafana Cloud | 🔒 À venir |
+| Phase 2 | Intégration capteurs + OLED | ✅ Complétée |
+| Phase 3 | WiFi + InfluxDB + Grafana Cloud | 🔄 En cours |
 | Phase 4 | Batterie + Deep Sleep + Alertes + Boîtier | 🔒 À venir |
 
 ## Progression détaillée
@@ -35,17 +35,18 @@ en temps réel via InfluxDB et Grafana.
 - Git + GitHub configurés avec SSH
 - Release v1.0 publiée
 
-### 🔄 Phase 2 — Intégration capteurs + OLED
+### ✅ Phase 2 — Intégration capteurs + OLED
 - Schéma de câblage réalisé dans Cirkit Designer
 - Code complet écrit et pushé (`station_meteo.ino`)
   - BME280 : température, humidité, pression
-  - AHT21 : température, humidité (redondance)
+  - AHT21 : température, humidité (redondance + validation croisée)
   - ENS160 : eCO2, TVOC, AQI avec compensation BME280
-  - OLED : 3 pages défilantes + barre de warm-up
-- BME280 et ENS160+AHT21 reçus — câblage et tests à venir
-- OLED en transit
+  - OLED : 3 pages défilantes + barre de warm-up au démarrage
+- Tous les capteurs reçus, soudés et testés
+- Calibration initiale ENS160 en cours (24h requis, une seule fois)
+- Système fonctionnel branché en USB autonome
 
-### 🔒 Phase 3 — WiFi + InfluxDB + Grafana Cloud
+### 🔄 Phase 3 — WiFi + InfluxDB + Grafana Cloud
 - Services cloud configurés (InfluxDB Cloud + Grafana Cloud)
 - Développement à venir
 
