@@ -1,76 +1,46 @@
-\# Phase 3 — WiFi + InfluxDB + Grafana Cloud
-
-
+# Phase 3 — WiFi + InfluxDB + Grafana Cloud
 
 > Statut : ✅ Complétée
 
+## Objectifs
 
+- Connecter l'ESP32 au réseau WiFi avec reconnexion automatique
+- Implémenter la fusion de données BME280 + AHT21 via filtre de Kalman
+- Envoyer les données vers InfluxDB Cloud avec SSL validé
+- Visualiser les données en temps réel sur Grafana Cloud
 
-\## Objectifs
+## Fonctionnalités implémentées
 
-\- Connecter l'ESP32 au réseau WiFi avec reconnexion automatique
+### WiFi
 
-\- Implémenter la fusion de données BME280 + AHT21 via filtre de Kalman
+- Connexion au démarrage avec timeout de 10 secondes
+- Reconnexion automatique toutes les 30 secondes si déconnecté
+- Credentials sécurisés dans `secrets.h` (exclu du dépôt via `.gitignore`)
 
-\- Envoyer les données vers InfluxDB Cloud
+### Fusion de données — Filtre de Kalman
 
-\- Visualiser les données en temps réel sur Grafana Cloud
+- Correction de biais AHT21 : offset empirique de 2.0°C (chaleur ENS160)
+- Filtre de Kalman simplifié fusionnant BME280 + AHT21
 
+### InfluxDB Cloud
 
+- Envoi toutes les 10 secondes via HTTP line protocol
+- SSL validé — certificat ISRG Root X1 (Let's Encrypt) embarqué dans le firmware
+- Synchronisation NTP au démarrage pour validation du certificat
+- Measurement : `meteo`, tag : `location=salon`
+- Fields : `temperature`, `humidite`, `pression`, `eco2`, `tvoc`, `aqi`
 
-\## Fonctionnalités implémentées
+### Grafana Cloud
 
+- Dashboard **Station Météo ESP32** avec 6 panels :
+  - Température (°C) — valeur fusionnée Kalman
+  - Humidité (%) — valeur fusionnée Kalman
+  - Pression (hPa)
+  - eCO2 (ppm)
+  - TVOC (ppb)
+  - AQI
 
-
-\### WiFi
-
-\- Connexion au démarrage avec timeout de 10 secondes
-
-\- Reconnexion automatique toutes les 30 secondes si déconnecté
-
-\- Credentials sécurisés dans `secrets.h` (exclu du dépôt via `.gitignore`)
-
-
-
-\### Fusion de données — Filtre de Kalman
-
-\- Correction de biais AHT21 : offset empirique de 2.0°C (chaleur ENS160)
-
-\- Filtre de Kalman simplifié fusionnant BME280 + AHT21
-
-\- Détection d'anomalie : alerte Serial si écart > 1°C ou > 5% humidité
-
-
-
-\### InfluxDB Cloud
-
-\- Envoi toutes les 10 secondes via HTTP line protocol
-
-\- Measurement : `meteo`, tag : `location=salon`
-
-\- Fields : `temperature`, `humidite`, `pression`, `eco2`, `tvoc`, `aqi`
-
-
-
-\### Grafana Cloud
-
-\- Dashboard \*\*Station Météo ESP32\*\* avec 6 panels :
-
-&#x20; - Température (°C) — valeur fusionnée Kalman
-
-&#x20; - Humidité (%) — valeur fusionnée Kalman
-
-&#x20; - Pression (hPa)
-
-&#x20; - eCO2 (ppm)
-
-&#x20; - TVOC (ppb)
-
-&#x20; - AQI
-
-
-
-\## Structure des fichiers
+## Structure des fichiers
 
 
 
@@ -88,15 +58,10 @@ phase3/
 
 \~\~\~
 
+## Décisions techniques
 
+Voir [DECISION.md](../DECISION.md) — sections 9, 10, 11.
 
-\## Décisions techniques
+## Prochaine étape
 
-Voir \[DECISION.md](../DECISION.md) — sections 9, 10, 11.
-
-
-
-\## Prochaine étape
-
-\[Phase 4](../phase4/) — Batterie + Deep Sleep + LED RGB + Buzzer + Alertes email + Boîtier 3D + PCB
-
+[Phase 4](../phase4/) — Batterie + Deep Sleep + LED RGB + Buzzer + Alertes email + Boîtier 3D + PCB

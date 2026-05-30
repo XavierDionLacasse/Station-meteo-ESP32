@@ -1,6 +1,6 @@
 # Décisions techniques — Station Météo ESP32
 
-> Version 1.3 — Phase 3
+> Version 1.4 — Phase 3 complétée
 
 Ce document retrace toutes les options évaluées et les décisions
 prises pour le choix des capteurs et l'architecture du projet.
@@ -175,7 +175,7 @@ Options à évaluer en Phase 4 après mesure de la consommation réelle :
 
 ### Décision
 
-Méthode retenue : **Filtre de Kalman simplifié** avec détection d'anomalie
+Méthode retenue : **Filtre de Kalman simplifié**
 
 ### Justification
 
@@ -195,8 +195,6 @@ l'incertitude de chaque capteur, produisant une estimation optimale.
 |-----------|--------|---------------|
 | Q | 0.01 | Bruit de processus faible — valeurs stables |
 | R | 0.5 | Bruit de mesure — confiance modérée |
-| Seuil anomalie temp | 1.0°C | Alerte si écart BME280/AHT21 > 1°C |
-| Seuil anomalie humi | 5.0% | Alerte si écart BME280/AHT21 > 5% |
 
 ### Correction de biais AHT21
 
@@ -234,7 +232,7 @@ Compatible nativement avec InfluxDB via requêtes Flux.
 |-----------|--------|---------------|
 | Intervalle envoi | 10 secondes | Granularité fine pour Phase 3 |
 | Protocole | HTTP line protocol | Simple, pas de bibliothèque externe |
-| SSL | `setInsecure()` temporaire | **TODO Phase 4 : valider certificat** |
+| SSL | `setCACert()` ISRG Root X1 | Certificat Let's Encrypt validé ✅ |
 
 ---
 
