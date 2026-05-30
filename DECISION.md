@@ -1,9 +1,9 @@
 # Décisions techniques — Station Météo ESP32
 
-> Version 1.2 — Phase 2
+> Version 1.3 — Phase 3
 
 Ce document retrace toutes les options évaluées et les décisions
-prises pour le choix des capteurs du projet.
+prises pour le choix des capteurs et l'architecture du projet.
 
 ---
 
@@ -55,8 +55,7 @@ sur breadboard.
 **BME280** — Choisi car il remplace à lui seul le ENS211 et un capteur
 de pression séparé. Trois mesures en un seul composant (température,
 humidité, pression), bibliothèque Adafruit bien maintenue, largement
-disponible. Sa résolution de 0.01°C et la fiabilité de son interface
-I2C compensent sa précision légèrement inférieure au DHT22.
+disponible.
 
 **AHT21** — Inclus gratuitement dans le module ENS160+AHT21. Plus précis
 que le BME280 en température (±0.3°C vs ±1°C). Utilisé comme capteur
@@ -105,15 +104,6 @@ gaz (9-12mA) est incompatible avec l'objectif d'autonomie sur batterie.
 | ENS160 | eCO2, TVOC, AQI | Qualité d'air intérieur |
 | AHT21 | Température, humidité | Redondance et validation croisée |
 
-### Avantages de cette configuration
-
-- Redondance température/humidité (BME280 + AHT21)
-- Validation croisée possible entre les deux capteurs
-- Compensation environnementale précise du ENS160
-- Tous les capteurs sur le même bus I2C (GPIO21/GPIO22)
-- Aucun conflit d'adresse I2C
-- Bibliothèques bien maintenues pour tous les capteurs
-
 ---
 
 ## 6. Intervalle Deep Sleep et autonomie
@@ -126,8 +116,7 @@ Intervalle Deep Sleep retenu : **15-20 minutes**
 
 L'ENS160 requiert un warm-up de 3 minutes après chaque réveil avant
 de produire des mesures fiables. Avec un intervalle de 5 minutes,
-60% du temps actif serait consacré au warm-up, ce qui est inefficace
-et détruit l'autonomie batterie.
+60% du temps actif serait consacré au warm-up.
 
 La qualité de l'air intérieure varie lentement — une mesure toutes
 les 15-20 minutes capture bien les tendances sans perte d'information
@@ -148,16 +137,13 @@ Autonomie théorique : **~2.25 jours** (~1.5-2 jours en conditions réelles)
 ### Note importante
 
 Ces chiffres sont théoriques. La consommation réelle sera mesurée
-avec le multimètre KAIWEETS HT118A en Phase 4 avant de prendre
-les décisions finales sur la batterie et l'alimentation.
+avec le multimètre KAIWEETS HT118A en Phase 4.
 
 ---
 
 ## 7. Alimentation Phase 4 — Décision en attente
 
-La faible autonomie théorique (~2 jours) nécessite une réflexion
-approfondie sur la solution d'alimentation. Options à évaluer en
-Phase 4 après mesure de la consommation réelle :
+Options à évaluer en Phase 4 après mesure de la consommation réelle :
 
 - Augmenter l'intervalle Deep Sleep (60 min+)
 - Plusieurs batteries 18650 en parallèle
@@ -183,18 +169,6 @@ Phase 4 après mesure de la consommation réelle :
 - **Page 2 — AHT21 :** Température, humidité + écart vs BME280 (dT, dH)
 - **Page 3 — ENS160 :** eCO2, TVOC, AQI avec libellé textuel
 
-### Page finale (Phase 4+)
-
-Affichage condensé des données essentielles uniquement — température,
-humidité, AQI. Les données détaillées restent accessibles via Grafana.
-
-### Warm-up ENS160
-
-Barre de progression affichée au démarrage pendant 3 minutes.
-Aucun message technique — l'utilisateur voit simplement l'appareil
-s'initialiser. Les données BME280/AHT21 sont disponibles
-immédiatement après le warm-up.
-
 ---
 
 ## 9. Fusion de données — BME280 et AHT21
@@ -210,16 +184,69 @@ Méthode retenue : **Filtre de Kalman simplifié** avec détection d'anomalie
 | Moyenne simple | Faible | Moyenne | ❌ Écarté |
 | Moyenne pondérée | Faible | Bonne | ❌ Écarté |
 | Filtre de Kalman | Moyenne | Optimale | ✅ Choisi |
-| Détection anomalie seule | Faible | — | ❌ Écarté |
 
 Le filtre de Kalman est la méthode standard en instrumentation
-professionnelle et systèmes embarqués. Il combine les mesures en
-tenant compte de l'incertitude de chaque capteur mathématiquement,
-produisant une estimation optimale de la valeur réelle.
+professionnelle. Il combine les mesures en tenant compte de
+l'incertitude de chaque capteur, produisant une estimation optimale.
 
-Une détection d'anomalie sera combinée au filtre : si les deux
-capteurs divergent au-delà d'un seuil défini (ex: >1°C), une
-alerte sera signalée plutôt que de fusionner des données
-potentiellement erronées.
+### Paramètres retenus
 
-**Implémentation prévue en Phase 3.**
+| Paramètre | Valeur | Signification |
+|-----------|--------|---------------|
+| Q | 0.01 | Bruit de processus faible — valeurs stables |
+| R | 0.5 | Bruit de mesure — confiance modérée |
+| Seuil anomalie temp | 1.0°C | Alerte si écart BME280/AHT21 > 1°C |
+| Seuil anomalie humi | 5.0% | Alerte si écart BME280/AHT21 > 5% |
+
+### Correction de biais AHT21
+
+L'AHT21 affiche systématiquement +2°C par rapport au BME280 en raison
+de la chaleur dégagée par l'ENS160 physiquement adjacent. Un offset
+empirique de **2.0°C** est soustrait avant le filtre de Kalman.
+
+Cette séparation est intentionnelle : le biais est une erreur
+systématique (toujours même direction, même amplitude) — le filtre
+de Kalman gère le bruit aléatoire résiduel.
+
+---
+
+## 10. Architecture cloud — Phase 3
+
+### Décision
+
+| Service | Rôle | Décision |
+|---------|------|----------|
+| InfluxDB Cloud | Stockage time-series | ✅ Choisi |
+| Grafana Cloud | Visualisation + alertes | ✅ Choisi |
+
+### Justification
+
+**InfluxDB** — Base de données time-series optimisée pour les données
+de capteurs. Le line protocol HTTP permet un envoi simple depuis
+l'ESP32 sans bibliothèque dédiée.
+
+**Grafana** — Standard industrie pour la visualisation de métriques.
+Compatible nativement avec InfluxDB via requêtes Flux.
+
+### Paramètres retenus
+
+| Paramètre | Valeur | Justification |
+|-----------|--------|---------------|
+| Intervalle envoi | 10 secondes | Granularité fine pour Phase 3 |
+| Protocole | HTTP line protocol | Simple, pas de bibliothèque externe |
+| SSL | `setInsecure()` temporaire | **TODO Phase 4 : valider certificat** |
+
+---
+
+## 11. Sécurité credentials — Phase 3
+
+### Décision
+
+Credentials WiFi et InfluxDB stockés dans `secrets.h` exclu du dépôt
+via `.gitignore`. Un fichier `secrets.h.example` est fourni comme
+template dans le dépôt.
+
+### Justification
+
+Pratique standard dans l'industrie pour éviter l'exposition de
+credentials sensibles dans un dépôt public.
