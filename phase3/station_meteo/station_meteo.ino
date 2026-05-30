@@ -6,11 +6,17 @@
 #include <Adafruit_SSD1306.h>
 #include <WiFi.h>
 #include "secrets.h"
+#include <HTTPClient.h>
+#include <WiFiClientSecure.h>
 
 // WiFi
 #define WIFI_TIMEOUT_MS     10000  // 10 secondes max pour connecter
 #define WIFI_RETRY_INTERVAL 30000  // 30 secondes entre chaque tentative
 unsigned long lastWifiRetry = 0;
+
+// InfluxDB
+#define INFLUXDB_INTERVAL 10000  // 10 secondes entre chaque envoi
+unsigned long dernierEnvoi = 0;
 
 // ─── Configuration OLED ───────────────────────────────────────────
 #define SCREEN_WIDTH    128
@@ -376,6 +382,48 @@ void fusionCapteurs(float tempBME, float humisBME, float tempAHT, float humiAHT)
   fusionHumi = kalmanUpdate(kHumi, humiMoyenne);
 }
 
+void envoyerInfluxDB() {
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("InfluxDB: pas de WiFi, envoi annulé");
+    return;
+  }
+
+  // Construction du line protocol
+  String lineProtocol = "meteo,location=salon ";
+  lineProtocol += "temperature=" + String(fusionTemp, 2) + ",";
+  lineProtocol += "humidite="    + String(fusionHumi, 2) + ",";
+  lineProtocol += "pression="    + String(bme_pression, 2);
+
+  if (ens_pret) {
+    lineProtocol += ",eco2="  + String(ens_eco2);
+    lineProtocol += ",tvoc="  + String(ens_tvoc);
+    lineProtocol += ",aqi="   + String(ens_aqi);
+  }
+
+  // Envoi HTTP
+  WiFiClientSecure client;
+  client.setInsecure();  // On désactive la vérif SSL pour l'instant
+
+  HTTPClient http;
+  String url = String(INFLUXDB_URL) + "/api/v2/write?org=" + INFLUXDB_ORG + "&bucket=" + INFLUXDB_BUCKET + "&precision=s";
+
+  http.begin(client, url);
+  http.addHeader("Authorization", "Token " + String(INFLUXDB_TOKEN));
+  http.addHeader("Content-Type", "text/plain; charset=utf-8");
+
+  int httpCode = http.POST(lineProtocol);
+
+  if (httpCode == 204) {
+    Serial.println("InfluxDB: envoi OK ✓");
+  } else {
+    Serial.print("InfluxDB: erreur HTTP ");
+    Serial.println(httpCode);
+    Serial.println(http.getString());
+  }
+
+  http.end();
+}
+
 // ═════════════════════════════════════════════════════════════════
 // SETUP
 // ═════════════════════════════════════════════════════════════════
@@ -439,6 +487,12 @@ void loop() {
     fusionCapteurs(bme_temp, bme_hum, aht_temp, aht_hum);
     afficher_serie();
   }
+
+  // Envoi InfluxDB toutes les 10 secondes
+  if (maintenant - dernierEnvoi >= INFLUXDB_INTERVAL) {
+    dernierEnvoi = maintenant;
+    envoyerInfluxDB();
+}
 
   // Gestion des pages OLED (indépendante des lectures)
   gerer_pages_oled();
