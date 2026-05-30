@@ -42,21 +42,15 @@
 
 ## Structure des fichiers
 
-
-
-\~\~\~
-
+<pre>
+```
 phase3/
-
-└── station\_meteo/
-
-&#x20;   ├── station\_meteo.ino   — code principal
-
-&#x20;   ├── secrets.h           — credentials (non versionné)
-
-&#x20;   └── secrets.h.example   — template vide (versionné)
-
-\~\~\~
+└── station_meteo/
+    ├── station_meteo.ino   — code principal
+    ├── secrets.h           — credentials (non versionné)
+    └── secrets.h.example   — template vide (versionné)
+```
+</pre>
 
 ## Décisions techniques
 
