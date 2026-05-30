@@ -61,6 +61,8 @@ en temps réel via InfluxDB et Grafana.
 - Boîtier 3D + PCB personnalisé
 
 ## Structure du dépôt
+
+```
 Station-meteo-ESP32/
 ├── README.md
 ├── DECISION.md
@@ -75,10 +77,11 @@ Station-meteo-ESP32/
 │   └── station_meteo/
 │       └── station_meteo.ino
 └── phase3/
-├── README.md
-└── station_meteo/
-├── station_meteo.ino
-└── secrets.h.example
+    ├── README.md
+    └── station_meteo/
+        ├── station_meteo.ino
+        └── secrets.h.example
+```
 
 ## Environnement de développement
 **Logiciels :** Arduino IDE 2.x · Git 2.47 · Pilote CP2102
